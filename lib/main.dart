@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:media_kit/media_kit.dart';
@@ -7,14 +5,9 @@ import 'package:media_kit/media_kit.dart';
 import 'app_root.dart';
 import 'state/favorites_store.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize media_kit for Windows HLS support
-  if (Platform.isWindows) {
-    MediaKit.ensureInitialized();
-  }
-
+  MediaKit.ensureInitialized();
   runApp(const VideoPlayerApp());
 }
 

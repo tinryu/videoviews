@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'package:universal_io/io.dart' show Platform;
 
 import '../../widgets/tv_player_controls.dart';
 
@@ -122,42 +122,27 @@ class _PlayerScreenState extends State<PlayerScreen> {
       }
 
       if (_isWindows) {
-        // Check if URL is HLS (.m3u8) - use media_kit for HLS on Windows
+        // Windows platform - use media_kit for HLS, video_player_win for others
         if (_isHlsUrl(url)) {
-          // Use media_kit for HLS on Windows
+          // HLS on Windows - use media_kit
           final player = Player();
           final videoController = VideoController(
             player,
             configuration:
                 VideoControllerConfiguration(width: 640, height: 480),
           );
-
           await player.open(Media(url));
-          await player.setPlaylistMode(PlaylistMode.none);
-          await player.play(); // Auto-play
-
-          if (!mounted) {
-            player.dispose();
-            return;
-          }
-
           setState(() {
             _mediaKitPlayer = player;
             _mediaKitVideoController = videoController;
-            _error = null;
           });
         } else {
-          // Use video_player_win for Windows (non-HLS only)
+          // Non-HLS on Windows - use video_player_win
           final winVideo =
               win_player.WinVideoPlayerController.network(uri.toString());
           await winVideo.initialize();
-          if (!mounted) {
-            winVideo.dispose();
-            return;
-          }
           setState(() {
             _winVideo = winVideo;
-            _error = null;
           });
         }
       } else {
